@@ -16,6 +16,7 @@ environs = {extras = ["django"], version = "*"}
 django-mptt = "*"
 drf-extensions = {git = "https://github.com/chibisov/drf-extensions.git", ref = "master"}
 celery = {extras = ["redis"], version = "*"}
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"

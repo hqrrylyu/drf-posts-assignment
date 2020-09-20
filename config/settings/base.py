@@ -124,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-CELERY_BROKER_URL = env.str("REDIS_URL")
+CELERY_BROKER_URL = env.str("REDIS_URL", default=None)
 
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 
