@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import sys
 from pathlib import Path
+
+from celery.schedules import crontab
 from environs import Env
 
 env = Env()
@@ -121,3 +123,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+CELERY_BROKER_URL = env.str("REDIS_URL")
+
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+CELERY_BEAT_SCHEDULE = {
+    "reset_upvotes": {
+        "task": "posts.tasks.reset_upvotes",
+        "schedule": crontab(minute=0, hour=4),
+    }
+}

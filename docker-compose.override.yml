@@ -10,3 +10,10 @@ services:
       - ".:/app"
     ports:
       - "8000:8000"
+
+  celery-beat:
+    build:
+      target: dev-stage
+      args:
+        PYTHON_IMAGE_TAG: 3.8
+    command: celery -A config beat -l info
