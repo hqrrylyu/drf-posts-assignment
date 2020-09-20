@@ -13,9 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
-# from django.urls import path
+from django.urls import include, path
+from rest_framework_extensions.routers import ExtendedSimpleRouter
 
+from posts_api.posts.api.viewsets import CommentViewset, PostViewset
+
+router = ExtendedSimpleRouter()
+
+router.register(r"posts", PostViewset).register(
+    r"comments",
+    CommentViewset,
+    basename="post-comments",
+    parents_query_lookups=["post"],
+)
+
+# fmt: off
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path("api/", include(router.urls)),
 ]
+# fmt: on

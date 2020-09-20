@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -11,7 +12,9 @@ class AuthoredModel(models.Model):
 
 
 class TimestampedModel(models.Model):
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    created_at = models.DateTimeField(
+        _("created at"), auto_now_add=True, editable=False
+    )
 
     class Meta:
         abstract = True
@@ -21,7 +24,7 @@ class Post(AuthoredModel, TimestampedModel):
     title = models.CharField(_("title"), max_length=100, help_text=_("Post title."))
     link = models.URLField(_("link"), help_text=_("Post link."))
     upvotes_number = models.PositiveSmallIntegerField(
-        _("upvotes number"), help_text=_("The number of post upvotes.")
+        _("upvotes number"), default=0, help_text=_("The number of post upvotes.")
     )
 
     class Meta:
@@ -30,6 +33,11 @@ class Post(AuthoredModel, TimestampedModel):
 
     def __str__(self):
         return self.title
+
+    def upvote(self):
+        self.upvotes_number = F("upvotes_number") + 1
+        self.save(update_fields=["upvotes_number"])
+        self.refresh_from_db()
 
 
 class Comment(AuthoredModel, TimestampedModel, MPTTModel):
